@@ -1,0 +1,448 @@
+#include "driverlib.h"
+#include "SHC_UART.h"
+#include <stdint.h>
+#include <string.h>
+//#include <stdlib.h>
+
+
+int main(void)
+{
+	init_clock();
+	init_uart();
+
+	// used to store the data received via UART
+    uint8_t received_data;
+
+    while(1)
+    {
+    	received_data = MAP_UART_receiveData( EUSCI_A2_BASE );
+
+    	switch(received_data){
+			case 'u':
+				UART_transmit_data("A/C UP");
+				UART_transmit_data("\r");
+				break;
+			case 'd':
+				UART_transmit_data("A/C down");
+				UART_transmit_data("\r");
+				break;
+    }
+
+
+
+    }
+}
+
+
+///* --COPYRIGHT--,BSD
+// * Copyright (c) 2016, Texas Instruments Incorporated
+// * All rights reserved.
+// *
+// * Redistribution and use in source and binary forms, with or without
+// * modification, are permitted provided that the following conditions
+// * are met:
+// *
+// * *  Redistributions of source code must retain the above copyright
+// *    notice, this list of conditions and the following disclaimer.
+// *
+// * *  Redistributions in binary form must reproduce the above copyright
+// *    notice, this list of conditions and the following disclaimer in the
+// *    documentation and/or other materials provided with the distribution.
+// *
+// * *  Neither the name of Texas Instruments Incorporated nor the names of
+// *    its contributors may be used to endorse or promote products derived
+// *    from this software without specific prior written permission.
+// *
+// * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+// * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+// * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+// * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+// * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+// * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// * --/COPYRIGHT--*/
+///* DriverLib Includes */
+//#include "driverlib.h"
+//
+///* Standard Includes */
+//#include <stdint.h>
+//
+///* GrLib Includes */
+//#include "grlib.h"
+//#include "button.h"
+//#include "imageButton.h"
+//#include "radioButton.h"
+//#include "checkbox.h"
+//#include "LcdDriver/kitronix320x240x16_ssd2119_spi.h"
+//#include "images/images.h"
+//#include "touch_P401R.h"
+//
+////Touch screen context
+//touch_context g_sTouchContext;
+//Graphics_ImageButton primitiveButton;
+//Graphics_ImageButton imageButton;
+//Graphics_ImageButton thermo;
+//Graphics_ImageButton upButton;
+//Graphics_ImageButton downButton;
+//Graphics_Button yesButton;
+//Graphics_Button noButton;
+//Graphics_Button exitButton;
+//
+//
+//// Graphic library context
+//Graphics_Context g_sContext;
+//
+////Flag to know if a demo was run
+//bool g_ranDemo = false;
+//
+//void Delay(uint16_t msec);
+//void boardInit(void);
+//void clockInit(void);
+//void initializeDemoButtons(void);
+//void drawMainMenu(void);
+//void runPrimitivesDemo(void);
+//void runImagesDemo(void);
+//void drawRestarDemo(void);
+//
+//void main(void)
+//{
+//	int16_t ulIdx;
+//    WDT_A_hold(WDT_A_BASE);
+//
+//    /* Initialize the demo. */
+//    boardInit();
+//    clockInit();
+//    initializeDemoButtons();
+//
+//    /* Globally enable interrupts. */
+//    __enable_interrupt();
+//
+//    // LCD setup using Graphics Library API calls
+//    Kitronix320x240x16_SSD2119Init();
+//    Graphics_initContext(&g_sContext, &g_sKitronix320x240x16_SSD2119);
+//    Graphics_setBackgroundColor(&g_sContext, GRAPHICS_COLOR_BLACK);
+//    Graphics_setFont(&g_sContext, &g_sFontCmss20b);
+//    Graphics_clearDisplay(&g_sContext);
+//
+//    touch_initInterface();
+//
+//    // Loop to detect touch
+//    while(1)
+//    {
+//      test();
+//    }
+//}
+//
+//void test(void)
+//{
+//	drawMainMenu();
+//	while(1)
+//	{
+//	  touch_updateCurrentTouch(&g_sTouchContext);
+//
+//		if(g_sTouchContext.touch)
+//		{
+//			if(Graphics_isImageButtonSelected(&primitiveButton,
+//											  g_sTouchContext.x,
+//											  g_sTouchContext.y))
+//			{
+//				Graphics_drawSelectedImageButton(&g_sContext,&primitiveButton);
+//				runPrimitivesDemo();
+//			}
+//			else if(Graphics_isImageButtonSelected(&imageButton,
+//												   g_sTouchContext.x,
+//												   g_sTouchContext.y))
+//			{
+//				Graphics_drawSelectedImageButton(&g_sContext,&imageButton);
+//				runImagesDemo();
+//			}
+//
+//			if(g_ranDemo == true)
+//			{
+//				g_ranDemo = false;
+//				drawMainMenu();
+//			}
+//		}
+//	}
+//}
+//
+//void initializeDemoButtons(void)
+//{
+//    // Initiliaze primitives Demo Button
+//    primitiveButton.xPosition = 20;
+//    primitiveButton.yPosition = 75;
+//    primitiveButton.borderWidth = 5;
+//    primitiveButton.selected = false;
+//    primitiveButton.imageWidth = Primitives_Button4BPP_UNCOMP.xSize;
+//    primitiveButton.imageHeight = Primitives_Button4BPP_UNCOMP.ySize;
+//    primitiveButton.borderColor = GRAPHICS_COLOR_WHITE;
+//    primitiveButton.selectedColor = GRAPHICS_COLOR_RED;
+//    primitiveButton.image = &Primitives_Button4BPP_UNCOMP;
+//
+//    // Initiliaze images Demo Button
+//    imageButton.xPosition = 180;
+//    imageButton.yPosition = 75;
+//    imageButton.borderWidth = 5;
+//    imageButton.selected = false;
+//    imageButton.imageWidth = Primitives_Button4BPP_UNCOMP.xSize;
+//    imageButton.imageHeight = Primitives_Button4BPP_UNCOMP.ySize;
+//    imageButton.borderColor = GRAPHICS_COLOR_WHITE;
+//    imageButton.selectedColor = GRAPHICS_COLOR_RED;
+//    imageButton.image = &Images_Button4BPP_UNCOMP;
+//
+//    yesButton.xMin = 80;
+//    yesButton.xMax = 150;
+//    yesButton.yMin = 80;
+//    yesButton.yMax = 120;
+//    yesButton.borderWidth = 1;
+//    yesButton.selected = false;
+//    yesButton.fillColor = GRAPHICS_COLOR_RED;
+//    yesButton.borderColor = GRAPHICS_COLOR_RED;
+//    yesButton.selectedColor = GRAPHICS_COLOR_BLACK;
+//    yesButton.textColor = GRAPHICS_COLOR_BLACK;
+//    yesButton.selectedTextColor = GRAPHICS_COLOR_RED;
+//    yesButton.textXPos = 100;
+//    yesButton.textYPos = 90;
+//    yesButton.text = "YES";
+//    yesButton.font = &g_sFontCm18;
+//
+//    noButton.xMin = 180;
+//    noButton.xMax = 250;
+//    noButton.yMin = 80;
+//    noButton.yMax = 120;
+//    noButton.borderWidth = 1;
+//    noButton.selected = false;
+//    noButton.fillColor = GRAPHICS_COLOR_RED;
+//    noButton.borderColor = GRAPHICS_COLOR_RED;
+//    noButton.selectedColor = GRAPHICS_COLOR_BLACK;
+//    noButton.textColor = GRAPHICS_COLOR_BLACK;
+//    noButton.selectedTextColor = GRAPHICS_COLOR_RED;
+//    noButton.textXPos = 200;
+//    noButton.textYPos = 90;
+//    noButton.text = "NO";
+//    noButton.font = &g_sFontCm18;
+//
+//    upButton.xPosition = 138;
+//    upButton.yPosition = 60;
+//    upButton.borderWidth = 1;
+//    upButton.selected = false;
+//    upButton.imageWidth = Arrow4BPP_UNCOMP.xSize;
+//    upButton.imageHeight = Arrow4BPP_UNCOMP.ySize;
+//    upButton.borderColor = GRAPHICS_COLOR_BLACK;
+//    //upButton.selectedColor = GRAPHICS_COLOR_RED;
+//    upButton.image = &Arrow4BPP_UNCOMP;
+//
+//    downButton.xPosition = 138;
+//    downButton.yPosition = 140;
+//    downButton.borderWidth = 0;
+//    downButton.selected = false;
+//    downButton.imageWidth = Arrowd4BPP_UNCOMP.xSize;
+//    downButton.imageHeight = Arrowd4BPP_UNCOMP.ySize;
+//	downButton.borderColor = GRAPHICS_COLOR_BLACK;
+//	//downButton.selectedColor = GRAPHICS_COLOR_RED;
+//	downButton.image = &Arrowd4BPP_UNCOMP;
+//
+//	exitButton.xMin = 0;
+//	exitButton.xMax = 70;
+//	exitButton.yMin = 200;
+//	exitButton.yMax = 240;
+//	exitButton.borderWidth = 1;
+//	exitButton.selected = false;
+//	exitButton.fillColor = GRAPHICS_COLOR_WHITE;
+//	exitButton.borderColor = GRAPHICS_COLOR_WHITE;
+//	exitButton.selectedColor = GRAPHICS_COLOR_BLUE;
+//	exitButton.textColor = GRAPHICS_COLOR_BLACK;
+//	exitButton.selectedTextColor = GRAPHICS_COLOR_WHITE;
+//	exitButton.textXPos = 20;
+//	exitButton.textYPos = 210;
+//	exitButton.text = "Exit";
+//	exitButton.font = &g_sFontCm18;
+//
+//}
+//
+//void drawMainMenu(void)
+//{
+//    Graphics_setForegroundColor(&g_sContext, GRAPHICS_COLOR_WHITE);
+//    Graphics_setBackgroundColor(&g_sContext, GRAPHICS_COLOR_BLACK);
+//    Graphics_clearDisplay(&g_sContext);
+//    Graphics_drawStringCentered(&g_sContext, "Smart Home Control",
+//                                AUTO_STRING_LENGTH,
+//                                159,
+//                                15,
+//                                TRANSPARENT_TEXT);
+//    Graphics_drawStringCentered(&g_sContext, "Main Menu",
+//                                    AUTO_STRING_LENGTH,
+//                                    159,
+//                                    50,
+//                                    TRANSPARENT_TEXT);
+//    // Draw Primitives image button
+//    Graphics_drawImageButton(&g_sContext, &primitiveButton);
+//
+//    // Draw Images image button
+//    Graphics_drawImageButton(&g_sContext, &imageButton);
+//}
+//
+//void runPrimitivesDemo(void)
+//{
+//
+//    int16_t ulIdx;
+//    uint32_t color;
+//
+//    Graphics_Rectangle myRectangle1 = { 10, 50, 155, 120};
+//    Graphics_Rectangle myRectangle2 = { 150, 100, 300, 200};
+//    Graphics_Rectangle myRectangle3 = { 0, 0, 319, 239};
+//    Graphics_clearDisplay(&g_sContext);
+//    Graphics_setForegroundColor(&g_sContext, GRAPHICS_COLOR_RED);
+//    Graphics_setBackgroundColor(&g_sContext, GRAPHICS_COLOR_BLACK);
+//    Graphics_drawImage(&g_sContext, &thermo4BPP_UNCOMP, 0, 0);
+//   // Delay(2000);
+//
+//    Graphics_drawImageButton(&g_sContext, &upButton);
+//    Graphics_drawImageButton(&g_sContext, &downButton);
+//    Graphics_drawButton(&g_sContext, &exitButton);
+//
+//   // Delay(2000);
+//    g_ranDemo = true;
+//    while(g_ranDemo)
+//   {
+//	   touch_updateCurrentTouch(&g_sTouchContext);
+//
+//	   if(g_sTouchContext.touch)
+//	   {
+//		   if(Graphics_isImageButtonSelected(&upButton,
+//											 g_sTouchContext.x,
+//											 g_sTouchContext.y))
+//		   {
+//			   Graphics_drawSelectedImageButton(&g_sContext,&upButton);
+//			   //insert a/c temp function
+//			   g_ranDemo = true;
+//		   }
+//		   else if(Graphics_isImageButtonSelected(&downButton,
+//												  g_sTouchContext.x,
+//												  g_sTouchContext.y))
+//		   {
+//			   Graphics_drawSelectedImageButton(&g_sContext,&downButton);
+//			   //insert a/c temp function
+//			   g_ranDemo = true;
+//		   }
+//
+//		   else if(Graphics_isButtonSelected(&exitButton,
+//												  g_sTouchContext.x,
+//												  g_sTouchContext.y))
+//		   {
+//			   Graphics_drawSelectedButton(&g_sContext, &exitButton);
+//			   g_ranDemo = false;
+//		   }
+//
+////		   if(g_ranDemo == true)
+////		   {
+////			   g_ranDemo = false;
+////			   drawMainMenu();
+////		   }
+//	   }
+//   }
+//    //drawRestarDemo();
+//    test();
+//}
+//
+//void runImagesDemo(void)
+//{
+//    Graphics_setForegroundColor(&g_sContext, GRAPHICS_COLOR_RED);
+//    Graphics_setBackgroundColor(&g_sContext, GRAPHICS_COLOR_BLACK);
+//    Graphics_clearDisplay(&g_sContext);
+//    Graphics_drawStringCentered(&g_sContext, "Draw Uncompressed Image", AUTO_STRING_LENGTH, 159, 200, TRANSPARENT_TEXT);
+//    Delay(2000);
+//    // Draw Image on the display
+//    Graphics_drawImage(&g_sContext, &lcd_color_320x2408BPP_UNCOMP, 0, 0);
+//    Delay(2000);
+//    Graphics_setForegroundColor(&g_sContext, GRAPHICS_COLOR_BLACK);
+//    Graphics_setBackgroundColor(&g_sContext, GRAPHICS_COLOR_WHITE);
+//    Graphics_clearDisplay(&g_sContext);
+//    Graphics_drawStringCentered(&g_sContext, "Draw RLE4 compressed Image", AUTO_STRING_LENGTH, 159, 200, TRANSPARENT_TEXT);
+//    Delay(2000);
+//    Graphics_drawImage(&g_sContext, &TI_logo_150x1501BPP_COMP_RLE4, 85, 45);
+//    Delay(2000);
+//
+//    g_ranDemo = true;
+//
+//    drawRestarDemo();
+//}
+//
+//void drawRestarDemo(void)
+//{
+//    g_ranDemo = false;
+//    Graphics_setForegroundColor(&g_sContext, GRAPHICS_COLOR_RED);
+//    Graphics_setBackgroundColor(&g_sContext, GRAPHICS_COLOR_BLACK);
+//    Graphics_clearDisplay(&g_sContext);
+//    Graphics_drawStringCentered(&g_sContext, "Would you like to go back",
+//        AUTO_STRING_LENGTH,
+//        159,
+//        45,
+//        TRANSPARENT_TEXT);
+//    Graphics_drawStringCentered(&g_sContext, "to the main menu?",
+//        AUTO_STRING_LENGTH,
+//        159,
+//        65,
+//        TRANSPARENT_TEXT);
+//
+//    // Draw Primitives image button
+//    Graphics_drawButton(&g_sContext, &yesButton);
+//
+//    // Draw Images image button
+//    Graphics_drawButton(&g_sContext, &noButton);
+//
+//    do{
+//        touch_updateCurrentTouch(&g_sTouchContext);
+//        if(Graphics_isButtonSelected(&noButton, g_sTouchContext.x,  g_sTouchContext.y))
+//        {
+//            Graphics_drawSelectedButton(&g_sContext, &noButton);
+//            g_ranDemo = true;
+//        }else{
+//            if(g_ranDemo)
+//            {
+//                Graphics_drawReleasedButton(&g_sContext, &noButton);
+//                g_ranDemo = false;
+//            }
+//        }
+//    }while(!Graphics_isButtonSelected(&yesButton, g_sTouchContext.x,  g_sTouchContext.y));
+//
+//    Graphics_drawSelectedButton(&g_sContext, &yesButton);
+//
+//    g_ranDemo = true;
+//    Delay(1000);
+//
+//}
+//
+//void boardInit()
+//{
+//    FPU_enableModule();
+//}
+//
+//void clockInit(void)
+//{
+//    /* 2 flash wait states, VCORE = 1, running off DC-DC, 48 MHz */
+//    FlashCtl_setWaitState(FLASH_BANK0, 2);
+//    FlashCtl_setWaitState(FLASH_BANK1, 2);
+//    PCM_setPowerState(PCM_AM_DCDC_VCORE1);
+//    CS_setDCOCenteredFrequency(CS_DCO_FREQUENCY_48);
+//    CS_setDCOFrequency(48000000);
+//    CS_initClockSignal(CS_MCLK, CS_DCOCLK_SELECT, 1);
+//    CS_initClockSignal(CS_SMCLK, CS_DCOCLK_SELECT, 1);
+//    CS_initClockSignal(CS_HSMCLK, CS_DCOCLK_SELECT, 1);
+//
+//    return;
+//}
+//
+//void Delay(uint16_t msec){
+//    uint32_t i = 0;
+//    uint32_t time = (msec / 1000) * (SYSTEM_CLOCK_SPEED / 15);
+//
+//    for(i = 0; i < time; i++)
+//    {
+//        ;
+//    }
+//}
